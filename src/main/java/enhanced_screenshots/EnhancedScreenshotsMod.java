@@ -1,5 +1,6 @@
 package enhanced_screenshots;
 
+import enhanced_screenshots.utils.Translations;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
@@ -12,6 +13,7 @@ public class EnhancedScreenshotsMod {
 	
 	public static void init() {
 		System.setProperty("java.awt.headless", "false");
+		Translations.loadTranslations();
 		getModMetadata();
 	}
 	
@@ -20,6 +22,8 @@ public class EnhancedScreenshotsMod {
 				.getModContainer(MOD_ID).orElseThrow()
 				.getMetadata();
 	}
+	
+	
 	
 	public static boolean isInDevEnvironment() {
 		return FabricLoader.getInstance().isDevelopmentEnvironment();

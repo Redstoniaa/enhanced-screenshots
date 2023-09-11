@@ -1,0 +1,19 @@
+enhanced_screenshots:
+  screen:
+    name: "Screenshot Management"
+    file_name.label: "Screenshot File Name"
+    save:
+      text: "Save"
+      tooltip: "Save the screenshot to a file"
+      success: "Saved screenshot as %s."
+      failure: "An error occurred while saving the screenshot."
+    copy:
+      text: "Copy to Clipboard"
+      text_success: "Copied!"
+      tooltip: "Copy the image to your clipboard"
+      success: "Screenshot copied to clipboard!"
+      failure: "Failed to copy screenshot to clipboard."
+    discard:
+      text: "Discard Screenshot"
+      tooltip: "Discard the screenshot"
+      success: "Screenshot discarded."

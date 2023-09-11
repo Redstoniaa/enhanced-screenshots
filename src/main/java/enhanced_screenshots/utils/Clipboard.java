@@ -1,7 +1,6 @@
 package enhanced_screenshots.utils;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -9,8 +8,8 @@ import java.awt.image.BufferedImage;
 
 // https://stackoverflow.com/a/71639621
 // because I'm not smart enough to do this myself
-public class ClipboardUtil {
-    private static final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+public class Clipboard {
+    private static final java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     
     public static void copyToClipboard(BufferedImage img) {
         clipboard.setContents(new TransferableImage(img), null);

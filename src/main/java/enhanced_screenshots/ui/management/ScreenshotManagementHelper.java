@@ -1,7 +1,7 @@
 package enhanced_screenshots.ui.management;
 
 import com.mojang.blaze3d.texture.NativeImage;
-import enhanced_screenshots.utils.ClipboardUtil;
+import enhanced_screenshots.utils.Clipboard;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
 
@@ -47,7 +47,7 @@ public class ScreenshotManagementHelper {
         try {
             if (!GraphicsEnvironment.isHeadless()) {
                 BufferedImage image = ImageIO.read(file);
-                ClipboardUtil.copyToClipboard(image);
+                Clipboard.copyToClipboard(image);
                 return true;
             } else {
                 return false;
