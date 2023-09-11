@@ -2,7 +2,7 @@ package enhanced_screenshots.mixin;
 
 import com.mojang.blaze3d.framebuffer.Framebuffer;
 import com.mojang.blaze3d.texture.NativeImage;
-import enhanced_screenshots.ui.ScreenshotManagementScreen;
+import enhanced_screenshots.ui.management.ScreenshotManagementScreen;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +23,6 @@ public abstract class ScreenshotRecorderMixin {
             cancellable = true)
     private static void grab(File gameDirectory, @Nullable String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci, NativeImage nativeImage, File file) {
         ci.cancel();
-        ScreenshotManagementScreen.handleScreenshot(nativeImage, file, messageReceiver);
+        ScreenshotManagementScreen.open(nativeImage, file, messageReceiver);
     }
 }
