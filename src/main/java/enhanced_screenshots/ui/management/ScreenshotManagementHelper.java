@@ -28,9 +28,9 @@ public class ScreenshotManagementHelper {
                 });
     }
     
-    public static boolean renameFile(File file, File targetDirectory, String targetFileName) {
+    public static boolean renameFile(File file, File destination) {
         try {
-            boolean renameSuccess = file.renameTo(new File(targetDirectory, targetFileName));
+            boolean renameSuccess = file.renameTo(destination);
             if (!renameSuccess) {
                 LOGGER.warn("Failed to rename file.");
                 return false;

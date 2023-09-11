@@ -5,7 +5,7 @@ enhanced_screenshots:
     save:
       text: "Save"
       tooltip: "Save the screenshot to a file"
-      success: "Saved screenshot as %s."
+      success: "Saved screenshot as "
       failure: "An error occurred while saving the screenshot."
     copy:
       text: "Copy to Clipboard"

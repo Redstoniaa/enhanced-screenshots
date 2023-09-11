@@ -6,14 +6,17 @@ import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.io.File;
 import java.util.function.Consumer;
 
 import static enhanced_screenshots.ui.management.ScreenshotManagementHelper.*;
 import static enhanced_screenshots.utils.Text.translated;
+import static net.minecraft.text.Text.literal;
 import static net.minecraft.util.Formatting.*;
 
 public class ScreenshotManagementScreen
@@ -95,10 +98,14 @@ public class ScreenshotManagementScreen
     }
     
     private void saveToFile() {
-        String saveName = getFileNameFieldValue() + ".png";
-        boolean success = renameFile(temporaryImageFile, screenshotDirectory, saveName);
+        File destination = new File(screenshotDirectory, getFileNameFieldValue() + ".png");
+        boolean success = renameFile(temporaryImageFile, destination);
+    
+        Text fileOpen = literal(destination.getName())
+                .formatted(Formatting.UNDERLINE)
+                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
         
-        if (success) sendMessage(translated("enhanced_screenshots.screen.save.success", saveName).formatted(GREEN));
+        if (success) sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(fileOpen));
         else         sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
         
         super.closeScreen();
