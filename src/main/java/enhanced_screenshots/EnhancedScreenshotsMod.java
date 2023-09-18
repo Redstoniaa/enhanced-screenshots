@@ -13,7 +13,7 @@ public class EnhancedScreenshotsMod {
 	
 	public static void init() {
 		System.setProperty("java.awt.headless", "false");
-		Translations.loadTranslations();
+		Translations.loadAllTranslations();
 		getModMetadata();
 	}
 	
@@ -25,11 +25,5 @@ public class EnhancedScreenshotsMod {
 	
 	public static boolean isInDevEnvironment() {
 		return FabricLoader.getInstance().isDevelopmentEnvironment();
-	}
-	
-	public static void logDevInfo(String info) {
-		if (isInDevEnvironment()) {
-			LOGGER.info(info);
-		}
 	}
 }

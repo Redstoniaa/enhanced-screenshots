@@ -8,34 +8,36 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static enhanced_screenshots.EnhancedScreenshotsMod.LOGGER;
 
 public class Translations {
-    public static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
-    public static final Gson GSON = new Gson();
-    
-    public static final String LANGUAGES_PATH = "assets/enhanced_screenshots/lang/";
-    
-    public static Set<String> supportedLanguages;
-    public static final String fallbackLanguage = "en_us";
     public static Map<String, Map<String, String>> translations = new HashMap<>();
+    public static Set<String> supportedLanguages;
+    public static final String FALLBACK_LANGUAGE = "en_us";
+    
+    private static final String LANGUAGES_DIRECTORY = "assets/enhanced_screenshots/lang/";
+    private static final String SUPPORTED_LANGUAGES_PATH = LANGUAGES_DIRECTORY + "meta/supported_languages.json";
+    private static final String LANGUAGE_PATH = LANGUAGES_DIRECTORY + "%s.json";
+    
+    private static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
+    private static final Gson GSON = new Gson();
     
     public static String translate(String translationKey, Object... args) {
         if (isLanguageSupported(getCurrentLanguage()))
             return translateTo(translationKey, getCurrentLanguage(), args);
-        else if (isLanguageSupported(fallbackLanguage))
-            return translateTo(translationKey, fallbackLanguage, args);
+        else if (isLanguageSupported(FALLBACK_LANGUAGE))
+            return translateTo(translationKey, FALLBACK_LANGUAGE, args);
         return translationKey;
     }
     
     public static String translateTo(String translationKey, String language, Object... args) {
-        return getTranslations(language)
-                .get(translationKey)
-                .formatted(args);
+        if (isLanguageSupported(language))
+            return getTranslations(language)
+                    .get(translationKey)
+                    .formatted(args);
+        return translationKey;
     }
     
     public static Map<String, String> getTranslations(String language) {
@@ -52,33 +54,37 @@ public class Translations {
         return supportedLanguages.contains(language);
     }
     
-    public static void loadTranslations() {
+    public static void loadAllTranslations() {
         try {
-            loadSupportedLanguages();
+            supportedLanguages = readSupportedLanguages();
         } catch (IOException e) {
-            LOGGER.warn("Unable to get supported languages. Falling back on " + fallbackLanguage, e);
-            supportedLanguages = Set.of(fallbackLanguage);
+            LOGGER.warn("Failed to get supported languages. Falling back on " + FALLBACK_LANGUAGE, e);
+            // Cannot use Collections.singleton() or Set.of() for this, as the
+            // set may be modified later if the fallback language fails to load.
+            supportedLanguages = new HashSet<>();
+            supportedLanguages.add(FALLBACK_LANGUAGE);
         }
         
         for (String languageCode : supportedLanguages) {
             try {
-                Map<String, String> translation = loadTranslation(languageCode);
-                translations.put(languageCode, translation);
+                translations.put(languageCode, readTranslation(languageCode));
             } catch (IOException e) {
-                LOGGER.warn("Unable to read translations for " + languageCode, e);
+                LOGGER.warn("Failed to read translations for " + languageCode, e);
                 supportedLanguages.remove(languageCode);
             }
         }
     }
     
-    private static void loadSupportedLanguages() throws IOException {
-        String content = readResource(LANGUAGES_PATH + "meta/supported_languages.json");
-        supportedLanguages = GSON.fromJson(content, new TypeToken<Set<String>>(){}.getType());
+    private static Set<String> readSupportedLanguages() throws IOException {
+        return readAndInterpretResourceJson(SUPPORTED_LANGUAGES_PATH);
     }
     
-    public static Map<String, String> loadTranslation(String languageCode) throws IOException {
-        String content = readResource(LANGUAGES_PATH + "%s.json".formatted(languageCode));
-        return GSON.fromJson(content, new TypeToken<Map<String, String>>(){}.getType());
+    private static Map<String, String> readTranslation(String languageCode) throws IOException {
+        return readAndInterpretResourceJson(LANGUAGE_PATH.formatted(languageCode));
+    }
+    
+    private static <T> T readAndInterpretResourceJson(String resourcePath) throws IOException {
+        return GSON.fromJson(readResource(resourcePath), new TypeToken<>() {});
     }
     
     private static String readResource(String resourcePath) throws IOException {
