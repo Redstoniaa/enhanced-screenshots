@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils;
+package enhanced_screenshots.utils.translations;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -76,15 +76,15 @@ public class Translations {
     }
     
     private static Set<String> readSupportedLanguages() throws IOException {
-        return readAndInterpretResourceJson(SUPPORTED_LANGUAGES_PATH);
+        return readAndInterpretResourceJson(SUPPORTED_LANGUAGES_PATH, new TypeToken<>(){});
     }
     
     private static Map<String, String> readTranslation(String languageCode) throws IOException {
-        return readAndInterpretResourceJson(LANGUAGE_PATH.formatted(languageCode));
+        return readAndInterpretResourceJson(LANGUAGE_PATH.formatted(languageCode), new TypeToken<>(){});
     }
     
-    private static <T> T readAndInterpretResourceJson(String resourcePath) throws IOException {
-        return GSON.fromJson(readResource(resourcePath), new TypeToken<>() {});
+    private static <T> T readAndInterpretResourceJson(String resourcePath, TypeToken<T> typeToken) throws IOException {
+        return GSON.fromJson(readResource(resourcePath), typeToken);
     }
     
     private static String readResource(String resourcePath) throws IOException {

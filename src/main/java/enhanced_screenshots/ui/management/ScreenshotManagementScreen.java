@@ -1,15 +1,18 @@
 package enhanced_screenshots.ui.management;
 
 import com.mojang.blaze3d.texture.NativeImage;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -17,11 +20,13 @@ import java.util.function.Consumer;
 import static enhanced_screenshots.ui.management.ScreenshotManagementHelper.*;
 import static enhanced_screenshots.utils.Text.translated;
 import static net.minecraft.text.Text.literal;
-import static net.minecraft.util.Formatting.*;
+import static net.minecraft.util.Formatting.GREEN;
+import static net.minecraft.util.Formatting.RED;
 
 public class ScreenshotManagementScreen
         extends Screen {
     private final NativeImage screenshot;
+    private final NativeImageBackedTexture screenshotTexture;
     private final File screenshotDirectory;
     private final File temporaryImageFile;
     private final Consumer<Text> messageReceiver;
@@ -63,6 +68,7 @@ public class ScreenshotManagementScreen
         super(translated("enhanced_screenshots.screen.name"));
         
         this.screenshot = screenshot;
+        this.screenshotTexture = new NativeImageBackedTexture(screenshot);
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
         this.temporaryImageFile = new File(screenshotDirectory, TEMPORARY_FILE_NAME);
@@ -90,6 +96,13 @@ public class ScreenshotManagementScreen
     private void addWidget(ClickableWidget widget, int x, int y) {
         widget.setPosition(x, y);
         addDrawableChild(widget);
+    }
+    
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        assert client != null;
+        Identifier identifier = client.getTextureManager().registerDynamicTexture("flipphoneeggmode", screenshotTexture);
+        graphics.drawTexture(identifier, 0, 0, 0, 0, 32, 32, 32, 32);
     }
     
     @Override

@@ -1,6 +1,6 @@
 package enhanced_screenshots;
 
-import enhanced_screenshots.utils.Translations;
+import enhanced_screenshots.utils.translations.Translations;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
