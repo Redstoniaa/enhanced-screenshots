@@ -22,8 +22,4 @@ public class EnhancedScreenshotsMod {
 				.getModContainer(MOD_ID).orElseThrow()
 				.getMetadata();
 	}
-	
-	public static boolean isInDevEnvironment() {
-		return FabricLoader.getInstance().isDevelopmentEnvironment();
-	}
 }

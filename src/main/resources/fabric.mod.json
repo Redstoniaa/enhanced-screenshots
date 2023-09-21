@@ -2,31 +2,21 @@
   "schemaVersion": 1,
   "id": "${id}",
   "version": "${version}",
-
   "name": "${name}",
   "description": "${description}",
-  "authors": [
-    "${author}"
-  ],
+  "authors": ["${author}"],
+  "icon": "assets/enhanced_screenshots/icon.png",
+  "environment": "client",
+  "license": "MIT",
   "contact": {
     "homepage": "https://github.com/Redstoniaa/enhanced-screenshots",
     "sources": "https://github.com/Redstoniaa/enhanced-screenshots",
     "issues": "https://github.com/Redstoniaa/enhanced-screenshots/issues"
   },
-
-  "license": "MIT",
-  "icon": "assets/enhanced_screenshots/icon.png",
-
-  "environment": "client",
   "entrypoints": {
-    "client": [
-      "enhanced_screenshots.EnhancedScreenshotsMod::init"
-    ]
+    "client": ["enhanced_screenshots.EnhancedScreenshotsMod::init"]
   },
-  "mixins": [
-    "enhanced_screenshots.mixins.json"
-  ],
-
+  "mixins": ["enhanced_screenshots.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.19",
     "minecraft": ">=1.20",

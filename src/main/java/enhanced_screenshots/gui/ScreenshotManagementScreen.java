@@ -1,23 +1,21 @@
-package enhanced_screenshots.ui.management;
+package enhanced_screenshots.gui;
 
 import com.mojang.blaze3d.texture.NativeImage;
-import net.minecraft.client.gui.GuiGraphics;
+import enhanced_screenshots.utils.file.Files;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.text.ClickEvent;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.io.File;
 import java.util.function.Consumer;
 
-import static enhanced_screenshots.ui.management.ScreenshotManagementHelper.*;
 import static enhanced_screenshots.utils.Text.translated;
 import static net.minecraft.text.Text.literal;
 import static net.minecraft.util.Formatting.GREEN;
@@ -25,19 +23,20 @@ import static net.minecraft.util.Formatting.RED;
 
 public class ScreenshotManagementScreen
         extends Screen {
-    private final NativeImage screenshot;
-    private final NativeImageBackedTexture screenshotTexture;
+    //    private final NativeImage screenshot;
     private final File screenshotDirectory;
     private final File temporaryImageFile;
+    private final String DEFAULT_FILE_NAME = Util.getFileNameFormattedDateTime() + ".png";
+    
     private final Consumer<Text> messageReceiver;
+//    private final Identifier previewId;
     
     private static final int GLOBAL_WIDGET_LENGTH = 150;
     private static final int GLOBAL_WIDGET_HEIGHT = 20;
     private static final int MARGIN = 5;
-    private static final String TEMPORARY_FILE_NAME = "temp.png";
     
     public TextFieldWidget fileNameField = new TextFieldWidget(
-            getClient().textRenderer,
+            MinecraftClient.getInstance().textRenderer,
             0, 0,
             GLOBAL_WIDGET_LENGTH * 2 / 3, GLOBAL_WIDGET_HEIGHT,
             translated("enhanced_screenshots.screen.file_name.label"));
@@ -61,19 +60,24 @@ public class ScreenshotManagementScreen
             .build();
     
     public static void open(NativeImage screenshot, File screenshotDirectory, Consumer<Text> messageReceiver) {
-        getClient().setScreen(new ScreenshotManagementScreen(screenshot, screenshotDirectory, messageReceiver));
+        MinecraftClient.getInstance()
+                .setScreen(new ScreenshotManagementScreen(screenshot, screenshotDirectory, messageReceiver));
     }
     
     public ScreenshotManagementScreen(NativeImage screenshot, File screenshotDirectory, Consumer<Text> messageReceiver) {
         super(translated("enhanced_screenshots.screen.name"));
-        
-        this.screenshot = screenshot;
-        this.screenshotTexture = new NativeImageBackedTexture(screenshot);
+
+//        this.screenshot = screenshot;
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
-        this.temporaryImageFile = new File(screenshotDirectory, TEMPORARY_FILE_NAME);
+        this.temporaryImageFile = new File(screenshotDirectory, DEFAULT_FILE_NAME);
+//        this.previewId = MinecraftClient.getInstance()
+//                .getTextureManager()
+//                .registerDynamicTexture("enhanced_screenshots_preview",
+//                                        new NativeImageBackedTexture(screenshot));
         
-        saveScreenshot(screenshot, temporaryImageFile);
+        Files.saveNativeImage(screenshot, temporaryImageFile);
+        setInitialFocus(fileNameField);
     }
     
     @Override
@@ -81,6 +85,22 @@ public class ScreenshotManagementScreen
         addRow(0, fileNameField, saveButton);
         addRow(1, copyClipboardButton);
         addRow(2, discardButton);
+    }
+
+//    @Override
+//    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+//        graphics.drawTexture(previewId,
+//                             0, 0,
+//                             screenshot.getWidth(), screenshot.getHeight(),
+//                             0, 0,
+//                             screenshot.getWidth(), screenshot.getHeight(),
+//                             screenshot.getWidth(), screenshot.getHeight());
+//        super.render(graphics, mouseX, mouseY, delta);
+//    }
+    
+    @Override
+    public void closeScreen() {
+        discardScreenshot();
     }
     
     private void addRow(int row, ClickableWidget... widgets) {
@@ -98,37 +118,32 @@ public class ScreenshotManagementScreen
         addDrawableChild(widget);
     }
     
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        assert client != null;
-        Identifier identifier = client.getTextureManager().registerDynamicTexture("flipphoneeggmode", screenshotTexture);
-        graphics.drawTexture(identifier, 0, 0, 0, 0, 32, 32, 32, 32);
-    }
-    
-    @Override
-    public void closeScreen() {
-        discardScreenshot();
-    }
-    
     private void saveToFile() {
-        File destination = new File(screenshotDirectory, getFileNameFieldValue() + ".png");
-        boolean success = renameFile(temporaryImageFile, destination);
-    
+        File destination;
+        boolean success = true;
+        if (!getSpecifiedFileName().isBlank()) {
+            destination = new File(screenshotDirectory, getSpecifiedFileName() + ".png");
+            success = Files.renameFile(temporaryImageFile, destination);
+        } else {
+            destination = new File(screenshotDirectory, DEFAULT_FILE_NAME);
+        }
+        
         Text fileOpen = literal(destination.getName())
                 .formatted(Formatting.UNDERLINE)
                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
         
-        if (success) sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(fileOpen));
-        else         sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
+        if (success)
+            sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(fileOpen));
+        else sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
         
         super.closeScreen();
     }
     
     private void copyToClipboard(ButtonWidget button) {
-        boolean success = copyImageToClipboard(temporaryImageFile);
-    
+        boolean success = Files.copyImageToClipboard(temporaryImageFile);
+        
         if (success) sendMessage(translated("enhanced_screenshots.screen.copy.success").formatted(GREEN));
-        else         sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
+        else sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
         
         button.setMessage(translated("enhanced_screenshots.screen.copy.text_success"));
         button.active = false;
@@ -140,11 +155,11 @@ public class ScreenshotManagementScreen
         super.closeScreen();
     }
     
-    private void sendMessage(MutableText text) {
+    private void sendMessage(Text text) {
         messageReceiver.accept(text);
     }
     
-    private String getFileNameFieldValue() {
+    private String getSpecifiedFileName() {
         return fileNameField.getText();
     }
 }
