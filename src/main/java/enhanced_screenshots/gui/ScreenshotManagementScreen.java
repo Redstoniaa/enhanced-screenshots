@@ -20,13 +20,14 @@ import static enhanced_screenshots.utils.Text.translated;
 import static net.minecraft.text.Text.literal;
 import static net.minecraft.util.Formatting.GREEN;
 import static net.minecraft.util.Formatting.RED;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 
 public class ScreenshotManagementScreen
         extends Screen {
     //    private final NativeImage screenshot;
     private final File screenshotDirectory;
-    private final File temporaryImageFile;
-    private final String DEFAULT_FILE_NAME = Util.getFileNameFormattedDateTime() + ".png";
+    private final File unnamedScreenshotFile;
     
     private final Consumer<Text> messageReceiver;
 //    private final Identifier previewId;
@@ -48,7 +49,7 @@ public class ScreenshotManagementScreen
             .build();
     public final ButtonWidget copyClipboardButton = ButtonWidget.builder(
                     translated("enhanced_screenshots.screen.copy.text"),
-                    this::copyToClipboard)
+                    button -> copyToClipboard())
             .size(GLOBAL_WIDGET_LENGTH, GLOBAL_WIDGET_HEIGHT)
             .tooltip(Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip")))
             .build();
@@ -70,13 +71,13 @@ public class ScreenshotManagementScreen
 //        this.screenshot = screenshot;
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
-        this.temporaryImageFile = new File(screenshotDirectory, DEFAULT_FILE_NAME);
+        this.unnamedScreenshotFile = new File(screenshotDirectory, Util.getFileNameFormattedDateTime() + ".png");
 //        this.previewId = MinecraftClient.getInstance()
 //                .getTextureManager()
 //                .registerDynamicTexture("enhanced_screenshots_preview",
 //                                        new NativeImageBackedTexture(screenshot));
         
-        Files.saveNativeImage(screenshot, temporaryImageFile);
+        Files.saveNativeImage(screenshot, unnamedScreenshotFile);
         setInitialFocus(fileNameField);
     }
     
@@ -97,6 +98,18 @@ public class ScreenshotManagementScreen
 //                             screenshot.getWidth(), screenshot.getHeight());
 //        super.render(graphics, mouseX, mouseY, delta);
 //    }
+    
+    
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW_KEY_ENTER)
+            saveToFile();
+        else if (hasControlDown() && keyCode == GLFW_KEY_C)
+            copyToClipboard();
+        // ESC key already calls closeScreen() in super.keyPressed(), so no need to do it here.
+        
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
     
     @Override
     public void closeScreen() {
@@ -123,34 +136,33 @@ public class ScreenshotManagementScreen
         boolean success = true;
         if (!getSpecifiedFileName().isBlank()) {
             destination = new File(screenshotDirectory, getSpecifiedFileName() + ".png");
-            success = Files.renameFile(temporaryImageFile, destination);
+            success = Files.rename(unnamedScreenshotFile, destination);
         } else {
-            destination = new File(screenshotDirectory, DEFAULT_FILE_NAME);
+            destination = unnamedScreenshotFile;
         }
         
-        Text fileOpen = literal(destination.getName())
+        Text openScreenshotClickable = literal(destination.getName())
                 .formatted(Formatting.UNDERLINE)
                 .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
         
-        if (success)
-            sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(fileOpen));
-        else sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
+        if (success) sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(openScreenshotClickable));
+        else         sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
         
         super.closeScreen();
     }
     
-    private void copyToClipboard(ButtonWidget button) {
-        boolean success = Files.copyImageToClipboard(temporaryImageFile);
+    private void copyToClipboard() {
+        boolean success = Files.copyImageToClipboard(unnamedScreenshotFile);
         
         if (success) sendMessage(translated("enhanced_screenshots.screen.copy.success").formatted(GREEN));
-        else sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
+        else         sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
         
-        button.setMessage(translated("enhanced_screenshots.screen.copy.text_success"));
-        button.active = false;
+        copyClipboardButton.setMessage(translated("enhanced_screenshots.screen.copy.text_success"));
+        copyClipboardButton.active = false;
     }
     
     private void discardScreenshot() {
-        temporaryImageFile.delete();
+        unnamedScreenshotFile.delete();
         sendMessage(translated("enhanced_screenshots.screen.discard.success"));
         super.closeScreen();
     }

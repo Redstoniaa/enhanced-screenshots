@@ -5,6 +5,7 @@ import com.mojang.blaze3d.texture.NativeImage;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -22,17 +23,17 @@ public class Files {
         }
     }
     
-    public static boolean renameFile(File file, File destination) {
-        boolean renameWasSuccessful = false;
+    public static boolean rename(File target, File destination) {
+        boolean wasRenameSuccessful = false;
         try {
-            renameWasSuccessful = file.renameTo(destination);
+            wasRenameSuccessful = target.renameTo(destination);
         } catch (Exception e) {
             e.printStackTrace();
         }
         
-        if (!renameWasSuccessful)
+        if (!wasRenameSuccessful)
             LOGGER.error("An error occurred while renaming the file.");
-        return renameWasSuccessful;
+        return wasRenameSuccessful;
     }
     
     public static boolean copyImageToClipboard(File source) {
@@ -54,7 +55,11 @@ public class Files {
         return true;
     }
     
-    private static void copyImageToClipboard(BufferedImage img) {
-        clipboard.setContents(new TransferableImage(img), null);
+    private static void copyImageToClipboard(BufferedImage image) {
+        copyToClipboard(new TransferableImage(image));
+    }
+    
+    private static void copyToClipboard(Transferable object) {
+        clipboard.setContents(object, null);
     }
 }
