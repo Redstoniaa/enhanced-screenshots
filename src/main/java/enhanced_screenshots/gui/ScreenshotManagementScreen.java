@@ -76,8 +76,10 @@ public class ScreenshotManagementScreen
     private void initialize(NativeImage screenshot) {
         Files.saveNativeImage(screenshot, unnamedScreenshotFile);
         
-        if (Files.isHeadless)
+        if (Files.isHeadless) {
             deactivateAndSetText(copyClipboardButton, translated("enhanced_screenshots.screen.copy.text_unavailable"));
+            copyClipboardButton.setTooltip(Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip_unavailable")));
+        }
         
         setInitialFocus(fileNameField);
     }
