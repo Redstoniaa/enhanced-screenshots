@@ -10,6 +10,7 @@ enhanced_screenshots:
     copy:
       text: "Copy to Clipboard"
       text_success: "Copied!"
+      text_unavailable: "Clipboard unavailable"
       tooltip: "Copy the image to your clipboard"
       success: "Screenshot copied to clipboard!"
       failure: "Failed to copy screenshot to clipboard."

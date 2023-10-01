@@ -25,12 +25,10 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 
 public class ScreenshotManagementScreen
         extends Screen {
-    //    private final NativeImage screenshot;
     private final File screenshotDirectory;
     private final File unnamedScreenshotFile;
     
     private final Consumer<Text> messageReceiver;
-//    private final Identifier previewId;
     
     private static final int GLOBAL_WIDGET_LENGTH = 150;
     private static final int GLOBAL_WIDGET_HEIGHT = 20;
@@ -41,9 +39,9 @@ public class ScreenshotManagementScreen
             0, 0,
             GLOBAL_WIDGET_LENGTH * 2 / 3, GLOBAL_WIDGET_HEIGHT,
             translated("enhanced_screenshots.screen.file_name.label"));
-    public final ButtonWidget saveButton = ButtonWidget.builder(
+    public final ButtonWidget saveFinalButton = ButtonWidget.builder(
                     translated("enhanced_screenshots.screen.save.text"),
-                    button -> saveToFile())
+                    button -> saveFinal())
             .size(GLOBAL_WIDGET_LENGTH / 3, GLOBAL_WIDGET_HEIGHT)
             .tooltip(Tooltip.create(translated("enhanced_screenshots.screen.save.tooltip")))
             .build();
@@ -68,42 +66,33 @@ public class ScreenshotManagementScreen
     public ScreenshotManagementScreen(NativeImage screenshot, File screenshotDirectory, Consumer<Text> messageReceiver) {
         super(translated("enhanced_screenshots.screen.name"));
 
-//        this.screenshot = screenshot;
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
-        this.unnamedScreenshotFile = new File(screenshotDirectory, Util.getFileNameFormattedDateTime() + ".png");
-//        this.previewId = MinecraftClient.getInstance()
-//                .getTextureManager()
-//                .registerDynamicTexture("enhanced_screenshots_preview",
-//                                        new NativeImageBackedTexture(screenshot));
+        this.unnamedScreenshotFile = createScreenshotFile(Util.getFileNameFormattedDateTime());
         
+        initialize(screenshot);
+    }
+    
+    private void initialize(NativeImage screenshot) {
         Files.saveNativeImage(screenshot, unnamedScreenshotFile);
+        
+        if (Files.isHeadless)
+            deactivateAndSetText(copyClipboardButton, translated("enhanced_screenshots.screen.copy.text_unavailable"));
+        
         setInitialFocus(fileNameField);
     }
     
     @Override
     protected void init() {
-        addRow(0, fileNameField, saveButton);
+        addRow(0, fileNameField, saveFinalButton);
         addRow(1, copyClipboardButton);
         addRow(2, discardButton);
     }
-
-//    @Override
-//    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-//        graphics.drawTexture(previewId,
-//                             0, 0,
-//                             screenshot.getWidth(), screenshot.getHeight(),
-//                             0, 0,
-//                             screenshot.getWidth(), screenshot.getHeight(),
-//                             screenshot.getWidth(), screenshot.getHeight());
-//        super.render(graphics, mouseX, mouseY, delta);
-//    }
-    
     
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW_KEY_ENTER)
-            saveToFile();
+            saveFinal();
         else if (hasControlDown() && keyCode == GLFW_KEY_C)
             copyToClipboard();
         // ESC key already calls closeScreen() in super.keyPressed(), so no need to do it here.
@@ -131,22 +120,27 @@ public class ScreenshotManagementScreen
         addDrawableChild(widget);
     }
     
-    private void saveToFile() {
+    private void saveFinal() {
+        String finalFileName = getSpecifiedFileName();
         File destination;
-        boolean success = true;
-        if (!getSpecifiedFileName().isBlank()) {
-            destination = new File(screenshotDirectory, getSpecifiedFileName() + ".png");
-            success = Files.rename(unnamedScreenshotFile, destination);
-        } else {
+        boolean isSuccessful;
+        
+        if (finalFileName.isBlank()) {
             destination = unnamedScreenshotFile;
+            isSuccessful = true;
+        } else {
+            destination = createScreenshotFile(finalFileName);
+            isSuccessful = Files.rename(unnamedScreenshotFile, destination);
         }
         
-        Text openScreenshotClickable = literal(destination.getName())
-                .formatted(Formatting.UNDERLINE)
-                .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
-        
-        if (success) sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(openScreenshotClickable));
-        else         sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
+        if (isSuccessful) {
+            Text openFileClickableText = literal(destination.getName())
+                    .formatted(Formatting.UNDERLINE)
+                    .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
+            sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(openFileClickableText));
+        } else {
+            sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
+        }
         
         super.closeScreen();
     }
@@ -157,8 +151,7 @@ public class ScreenshotManagementScreen
         if (success) sendMessage(translated("enhanced_screenshots.screen.copy.success").formatted(GREEN));
         else         sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
         
-        copyClipboardButton.setMessage(translated("enhanced_screenshots.screen.copy.text_success"));
-        copyClipboardButton.active = false;
+        deactivateAndSetText(copyClipboardButton, translated("enhanced_screenshots.screen.copy.text_success"));
     }
     
     private void discardScreenshot() {
@@ -167,8 +160,17 @@ public class ScreenshotManagementScreen
         super.closeScreen();
     }
     
+    private File createScreenshotFile(String name) {
+        return new File(screenshotDirectory, name + ".png");
+    }
+    
     private void sendMessage(Text text) {
         messageReceiver.accept(text);
+    }
+    
+    private void deactivateAndSetText(ClickableWidget widget, Text text) {
+        widget.active = false;
+        widget.setMessage(text);
     }
     
     private String getSpecifiedFileName() {

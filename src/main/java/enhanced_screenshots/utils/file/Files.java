@@ -46,7 +46,7 @@ public class Files {
     }
     
     public static boolean copyImageToClipboard(File source) {
-        if (!isHeadless) return false;
+        if (isHeadless) return false;
         
         BufferedImage image = readImageFrom(source);
         if (image == null) return false;
