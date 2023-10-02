@@ -18,8 +18,7 @@ import java.util.function.Consumer;
 
 import static enhanced_screenshots.utils.Text.translated;
 import static net.minecraft.text.Text.literal;
-import static net.minecraft.util.Formatting.GREEN;
-import static net.minecraft.util.Formatting.RED;
+import static net.minecraft.util.Formatting.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 
@@ -129,6 +128,12 @@ public class ScreenshotManagementScreen
             isSuccessful = true;
         } else {
             destination = createScreenshotFile(finalFileName);
+            
+            if (destination.exists()) {
+                sendMessage(translated("enhanced_screenshots.screen.save.failure_file_exists", destination.getName()).formatted(YELLOW));
+                return;
+            }
+            
             isSuccessful = IO.rename(unnamedScreenshotFile, destination);
         }
         

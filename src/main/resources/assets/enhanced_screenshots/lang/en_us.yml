@@ -7,6 +7,7 @@ enhanced_screenshots:
       tooltip: "Save the screenshot to a file"
       success: "Saved screenshot as "
       failure: "An error occurred while saving the screenshot."
+      failure_file_exists: "A file named %s already exists. Please choose a different name."
     copy:
       text: "Copy to Clipboard"
       text_success: "Copied!"
