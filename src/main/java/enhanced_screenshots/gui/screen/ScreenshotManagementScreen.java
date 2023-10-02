@@ -5,7 +5,7 @@ import enhanced_screenshots.utils.IO;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.button.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.ClickEvent;
@@ -115,7 +115,7 @@ public class ScreenshotManagementScreen
     
     private void addWidget(ClickableWidget widget, int x, int y) {
         widget.setPosition(x, y);
-        addDrawableChild(widget);
+        addDrawableSelectableElement(widget);
     }
     
     private void saveFinal() {
