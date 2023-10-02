@@ -1,7 +1,7 @@
-package enhanced_screenshots.gui;
+package enhanced_screenshots.gui.screen;
 
 import com.mojang.blaze3d.texture.NativeImage;
-import enhanced_screenshots.utils.file.Files;
+import enhanced_screenshots.utils.IO;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -69,19 +69,16 @@ public class ScreenshotManagementScreen
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
         this.unnamedScreenshotFile = createScreenshotFile(Util.getFileNameFormattedDateTime());
-        
-        initialize(screenshot);
-    }
     
-    private void initialize(NativeImage screenshot) {
-        Files.saveNativeImage(screenshot, unnamedScreenshotFile);
-        
-        if (Files.isHeadless) {
-            deactivateAndSetText(copyClipboardButton, translated("enhanced_screenshots.screen.copy.text_unavailable"));
-            copyClipboardButton.setTooltip(Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip_unavailable")));
-        }
-        
+        IO.saveNativeImage(screenshot, unnamedScreenshotFile);
+    
         setInitialFocus(fileNameField);
+        if (IO.isHeadless) {
+            setWidgetActive(copyClipboardButton,
+                            false,
+                            translated("enhanced_screenshots.screen.copy.text_unavailable"),
+                            Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip_unavailable")));
+        }
     }
     
     @Override
@@ -132,7 +129,7 @@ public class ScreenshotManagementScreen
             isSuccessful = true;
         } else {
             destination = createScreenshotFile(finalFileName);
-            isSuccessful = Files.rename(unnamedScreenshotFile, destination);
+            isSuccessful = IO.rename(unnamedScreenshotFile, destination);
         }
         
         if (isSuccessful) {
@@ -148,12 +145,14 @@ public class ScreenshotManagementScreen
     }
     
     private void copyToClipboard() {
-        boolean success = Files.copyImageToClipboard(unnamedScreenshotFile);
+        boolean success = IO.copyImageToClipboard(unnamedScreenshotFile);
         
         if (success) sendMessage(translated("enhanced_screenshots.screen.copy.success").formatted(GREEN));
         else         sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
         
-        deactivateAndSetText(copyClipboardButton, translated("enhanced_screenshots.screen.copy.text_success"));
+        setWidgetActive(copyClipboardButton,
+                        false,
+                        translated("enhanced_screenshots.screen.copy.text_success"));
     }
     
     private void discardScreenshot() {
@@ -170,9 +169,14 @@ public class ScreenshotManagementScreen
         messageReceiver.accept(text);
     }
     
-    private void deactivateAndSetText(ClickableWidget widget, Text text) {
-        widget.active = false;
+    private void setWidgetActive(ClickableWidget widget, boolean active, Text text) {
+        widget.active = active;
         widget.setMessage(text);
+    }
+    
+    private void setWidgetActive(ClickableWidget widget, boolean active, Text text, Tooltip tooltip) {
+        setWidgetActive(widget, active, text);
+        widget.setTooltip(tooltip);
     }
     
     private String getSpecifiedFileName() {

@@ -2,7 +2,7 @@ package enhanced_screenshots.mixin;
 
 import com.mojang.blaze3d.framebuffer.Framebuffer;
 import com.mojang.blaze3d.texture.NativeImage;
-import enhanced_screenshots.gui.ScreenshotManagementScreen;
+import enhanced_screenshots.gui.screen.ScreenshotManagementScreen;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;

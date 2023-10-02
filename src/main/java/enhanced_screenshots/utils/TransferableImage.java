@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils.file;
+package enhanced_screenshots.utils;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;

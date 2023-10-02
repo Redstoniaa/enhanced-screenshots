@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils.file;
+package enhanced_screenshots.utils;
 
 import com.mojang.blaze3d.texture.NativeImage;
 
@@ -11,7 +11,7 @@ import java.io.File;
 
 import static enhanced_screenshots.EnhancedScreenshotsMod.LOGGER;
 
-public class Files {
+public class IO {
     public static final boolean isHeadless;
     private static final Clipboard clipboard;
     
@@ -40,7 +40,7 @@ public class Files {
                 LOGGER.error("File rename operation failed. Attempted to rename " + target + " to " + destination);
             return renameSuccess;
         } catch (Exception e) {
-            LOGGER.error("An error occurred while renaming the file.", e);
+            LOGGER.error("An error occurred while renaming the io.", e);
             return false;
         }
     }

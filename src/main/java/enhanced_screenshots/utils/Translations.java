@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils.translations;
+package enhanced_screenshots.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
