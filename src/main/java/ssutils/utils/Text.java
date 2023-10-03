@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils;
+package ssutils.utils;
 
 import net.minecraft.text.MutableText;
 

@@ -3,8 +3,6 @@ apply plugin: 'fabric-loom'
 apply plugin: 'com.replaymod.preprocess'
 apply plugin: 'me.fallenbreath.yamlang'
 
-int mcVersion = project.mcVersion
-
 preprocess {
     tabIndentation = true
 }
@@ -31,8 +29,8 @@ base {
     archivesName = project.archives_base_name
 }
 
-String MIXIN_CONFIG_PATH = 'enhanced_screenshots.mixins.json'
-String LANG_DIR = 'assets/enhanced_screenshots/lang'
+String MIXIN_CONFIG_PATH = 'ssutils.mixins.json'
+String LANG_DIR = 'assets/ssutils/lang'
 JavaVersion JAVA_COMPATIBILITY = JavaVersion.VERSION_17
 
 loom {

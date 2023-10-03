@@ -1,13 +1,13 @@
-package enhanced_screenshots;
+package ssutils;
 
-import enhanced_screenshots.utils.Translations;
+import ssutils.utils.Translations;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EnhancedScreenshotsMod {
-    public static final String MOD_ID = "enhanced-screenshots";
+public class ScreenshotUtilitiesMod {
+    public static final String MOD_ID = "screenshot-utilities";
     public static ModMetadata METADATA;
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     

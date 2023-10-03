@@ -1,7 +1,7 @@
-package enhanced_screenshots.gui.screen;
+package ssutils.gui.screen;
 
 import com.mojang.blaze3d.texture.NativeImage;
-import enhanced_screenshots.utils.IO;
+import ssutils.utils.IO;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -20,7 +20,7 @@ import net.minecraft.util.Util;
 import java.io.File;
 import java.util.function.Consumer;
 
-import static enhanced_screenshots.utils.Text.translated;
+import static ssutils.utils.Text.translated;
 import static net.minecraft.text.Text.literal;
 import static net.minecraft.util.Formatting.*;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
@@ -41,24 +41,24 @@ public class ScreenshotManagementScreen
             MinecraftClient.getInstance().textRenderer,
             0, 0,
             GLOBAL_WIDGET_LENGTH * 2 / 3, GLOBAL_WIDGET_HEIGHT,
-            translated("enhanced_screenshots.screen.file_name.label"));
+            translated("ssutils.screen.file_name.label"));
     public final ButtonWidget saveFinalButton = ButtonWidget.builder(
-                    translated("enhanced_screenshots.screen.save.text"),
+                    translated("ssutils.screen.save.text"),
                     button -> saveFinal())
             .size(GLOBAL_WIDGET_LENGTH / 3, GLOBAL_WIDGET_HEIGHT)
-            .tooltip(Tooltip.create(translated("enhanced_screenshots.screen.save.tooltip")))
+            .tooltip(Tooltip.create(translated("ssutils.screen.save.tooltip")))
             .build();
     public final ButtonWidget copyClipboardButton = ButtonWidget.builder(
-                    translated("enhanced_screenshots.screen.copy.text"),
+                    translated("ssutils.screen.copy.text"),
                     button -> copyToClipboard())
             .size(GLOBAL_WIDGET_LENGTH, GLOBAL_WIDGET_HEIGHT)
-            .tooltip(Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip")))
+            .tooltip(Tooltip.create(translated("ssutils.screen.copy.tooltip")))
             .build();
     public final ButtonWidget discardButton = ButtonWidget.builder(
-                    translated("enhanced_screenshots.screen.discard.text"),
+                    translated("ssutils.screen.discard.text"),
                     button -> discardScreenshot())
             .size(GLOBAL_WIDGET_LENGTH, GLOBAL_WIDGET_HEIGHT)
-            .tooltip(Tooltip.create(translated("enhanced_screenshots.screen.discard.tooltip")))
+            .tooltip(Tooltip.create(translated("ssutils.screen.discard.tooltip")))
             .build();
     
     public static void open(NativeImage screenshot, File screenshotDirectory, Consumer<Text> messageReceiver) {
@@ -67,7 +67,7 @@ public class ScreenshotManagementScreen
     }
     
     public ScreenshotManagementScreen(NativeImage screenshot, File screenshotDirectory, Consumer<Text> messageReceiver) {
-        super(translated("enhanced_screenshots.screen.name"));
+        super(translated("ssutils.screen.name"));
 
         this.screenshotDirectory = screenshotDirectory;
         this.messageReceiver = messageReceiver;
@@ -79,8 +79,8 @@ public class ScreenshotManagementScreen
         if (IO.isHeadless) {
             setWidgetActive(copyClipboardButton,
                             false,
-                            translated("enhanced_screenshots.screen.copy.text_unavailable"),
-                            Tooltip.create(translated("enhanced_screenshots.screen.copy.tooltip_unavailable")));
+                            translated("ssutils.screen.copy.text_unavailable"),
+                            Tooltip.create(translated("ssutils.screen.copy.tooltip_unavailable")));
         }
     }
     
@@ -134,7 +134,7 @@ public class ScreenshotManagementScreen
             destination = createScreenshotFile(finalFileName);
             
             if (destination.exists()) {
-                sendMessage(translated("enhanced_screenshots.screen.save.failure_file_exists", destination.getName()).formatted(YELLOW));
+                sendMessage(translated("ssutils.screen.save.failure_file_exists", destination.getName()).formatted(YELLOW));
                 return;
             }
             
@@ -145,9 +145,9 @@ public class ScreenshotManagementScreen
             Text openFileClickableText = literal(destination.getName())
                     .formatted(Formatting.UNDERLINE)
                     .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
-            sendMessage(translated("enhanced_screenshots.screen.save.success").formatted(GREEN).append(openFileClickableText));
+            sendMessage(translated("ssutils.screen.save.success").formatted(GREEN).append(openFileClickableText));
         } else {
-            sendMessage(translated("enhanced_screenshots.screen.save.failure").formatted(RED));
+            sendMessage(translated("ssutils.screen.save.failure").formatted(RED));
         }
         
         super.closeScreen();
@@ -156,17 +156,17 @@ public class ScreenshotManagementScreen
     private void copyToClipboard() {
         boolean success = IO.copyImageToClipboard(unnamedScreenshotFile);
         
-        if (success) sendMessage(translated("enhanced_screenshots.screen.copy.success").formatted(GREEN));
-        else         sendMessage(translated("enhanced_screenshots.screen.copy.failure").formatted(RED));
+        if (success) sendMessage(translated("ssutils.screen.copy.success").formatted(GREEN));
+        else         sendMessage(translated("ssutils.screen.copy.failure").formatted(RED));
         
         setWidgetActive(copyClipboardButton,
                         false,
-                        translated("enhanced_screenshots.screen.copy.text_success"));
+                        translated("ssutils.screen.copy.text_success"));
     }
     
     private void discardScreenshot() {
         unnamedScreenshotFile.delete();
-        sendMessage(translated("enhanced_screenshots.screen.discard.success"));
+        sendMessage(translated("ssutils.screen.discard.success"));
         super.closeScreen();
     }
     

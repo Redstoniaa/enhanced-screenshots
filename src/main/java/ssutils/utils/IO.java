@@ -1,4 +1,4 @@
-package enhanced_screenshots.utils;
+package ssutils.utils;
 
 import com.mojang.blaze3d.texture.NativeImage;
 
@@ -9,7 +9,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import static enhanced_screenshots.EnhancedScreenshotsMod.LOGGER;
+import static ssutils.ScreenshotUtilitiesMod.LOGGER;
 
 public class IO {
     public static final boolean isHeadless;

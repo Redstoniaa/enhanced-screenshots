@@ -1,5 +1,6 @@
-package enhanced_screenshots.utils;
+package ssutils.utils;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
@@ -10,34 +11,34 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static enhanced_screenshots.EnhancedScreenshotsMod.LOGGER;
+import static ssutils.ScreenshotUtilitiesMod.LOGGER;
 
 public class Translations {
     public static Map<String, Map<String, String>> translations = new HashMap<>();
     public static Set<String> supportedLanguages;
     public static final String FALLBACK_LANGUAGE = "en_us";
     
-    private static final String LANGUAGES_DIRECTORY = "assets/enhanced_screenshots/lang/";
+    private static final String LANGUAGES_DIRECTORY = "assets/ssutils/lang/";
     private static final String SUPPORTED_LANGUAGES_PATH = LANGUAGES_DIRECTORY + "meta/supported_languages.json";
     private static final String LANGUAGE_PATH = LANGUAGES_DIRECTORY + "%s.json";
     
     private static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
     private static final Gson GSON = new Gson();
     
-    public static String translate(String translationKey, Object... args) {
+    public static String translate(String key, Object... args) {
         if (isLanguageSupported(getCurrentLanguage()))
-            return translateTo(translationKey, getCurrentLanguage(), args);
+            return translateTo(getCurrentLanguage(), key, args);
         else if (isLanguageSupported(FALLBACK_LANGUAGE))
-            return translateTo(translationKey, FALLBACK_LANGUAGE, args);
-        return translationKey;
+            return translateTo(FALLBACK_LANGUAGE, key, args);
+        return key;
     }
     
-    public static String translateTo(String translationKey, String language, Object... args) {
-        if (isLanguageSupported(language))
+    public static String translateTo(String language, String key, Object... args) {
+        if (hasTranslationFor(language, key))
             return getTranslations(language)
-                    .get(translationKey)
+                    .get(key)
                     .formatted(args);
-        return translationKey;
+        return key;
     }
     
     public static Map<String, String> getTranslations(String language) {
@@ -54,15 +55,16 @@ public class Translations {
         return supportedLanguages.contains(language);
     }
     
+    public static boolean hasTranslationFor(String language, String key) {
+        return isLanguageSupported(language) && getTranslations(language).containsKey(key);
+    }
+    
     public static void loadAllTranslations() {
         try {
             supportedLanguages = readSupportedLanguages();
         } catch (IOException e) {
             LOGGER.warn("Failed to get supported languages. Falling back on " + FALLBACK_LANGUAGE, e);
-            // Cannot use Collections.singleton() or Set.of() for this, as the
-            // set may be modified later if the fallback language fails to load.
-            supportedLanguages = new HashSet<>();
-            supportedLanguages.add(FALLBACK_LANGUAGE);
+            supportedLanguages = Sets.newHashSet(FALLBACK_LANGUAGE);
         }
         
         for (String languageCode : supportedLanguages) {

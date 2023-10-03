@@ -1,4 +1,4 @@
-enhanced_screenshots:
+ssutils:
   screen:
     name: "Screenshot Management"
     file_name.label: "Screenshot File Name"
