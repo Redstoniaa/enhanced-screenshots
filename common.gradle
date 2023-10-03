@@ -46,7 +46,7 @@ remapJar {
     remapperIsolation = true
 }
 
-version = project.mod_version
+version = "$project.mod_version-mc$project.minecraft_version"
 group = project.maven_group
 
 // See https://youtrack.jetbrains.com/issue/IDEA-296490
