@@ -5,7 +5,11 @@ import enhanced_screenshots.utils.IO;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
+//#if MC>=12002
 import net.minecraft.client.gui.widget.button.ButtonWidget;
+//#else
+//$$ import net.minecraft.client.gui.widget.ButtonWidget;
+//#endif
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.ClickEvent;
