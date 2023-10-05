@@ -9,9 +9,9 @@ When you take a screenshot with this mod enabled, a nice little screen will show
 
 ## Sounds great, how do I use it?
 - **Snap is a Fabric mod**, and I have no plans to port to Forge, even though it'll probably be really easy. If you don't have Fabric yet, here's the [installer](https://fabricmc.net/use/installer/)!
-  - [Quilt](https://quiltmc.org/) has support for Fabric mods, and most likely will support this one without any problems. If you do find problems though, feel free to [report them](../issues)!
-- **Snap currently supports Minecraft versions 1.19 and above**, and this was mainly because I got scared off by all my code turning red when going to 1.18. If you are playing in an older version and really want support for that version, you can yell at me about it in [the issues](../issues).
-- Once you've got your mod loader set up and are on a supported version, you can head over to the [releases](../releases) and select the latest version of the mod, and select the correct version of the mod to match your Minecraft version. I will have a table there telling you what mod version works with what range of Minecraft versions for you to look at. Make sure you get the right one!
+  - [Quilt](https://quiltmc.org/) has support for Fabric mods, and most likely will support this one without any problems. If you do find problems though, feel free to [report them](../../issues)!
+- **Snap currently supports Minecraft versions 1.19 and above**, and this was mainly because I got scared off by all my code turning red when going to 1.18. If you are playing in an older version and really want support for that version, you can yell at me about it in [the issues](../../issues).
+- Once you've got your mod loader set up and are on a supported version, you can head over to the [releases](../../releases) and select the latest version of the mod, and select the correct version of the mod to match your Minecraft version. I will have a table there telling you what mod version works with what range of Minecraft versions for you to look at. Make sure you get the right one!
   - I plan to get this mod up on [Modrinth](https://modrinth.com/) at some point, so people can more easily download the mod, and this would also allow for nice things with [Prism Launcher](https://prismlauncher.org/) such as easy downloading and auto updating! 
 
 ## A guide to the screen
