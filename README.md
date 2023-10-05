@@ -17,5 +17,14 @@ There are just four things on the screen. Nice and simple!
 ## Further improvements for future me
 I would like to add a sort of "screenshot display" on the screen, to show the player what the screenshot they just took looks like. I currently am skill issuing, so I cannot right now, but I'm looking to other mods to see how they've done it. At the moment, this isn't an issue in singleplayer, because the game will just pause in this screen, but in multiplayer, the game would keep going, so you don't get to see how your screenshot looks.
 
+## Credits and attributions
+Not many people directly contributed to this project, because, well - I kinda just start projects on a whim whenever I feel like it. Despite that, there are still a lot of people who _indirectly_ contributed, and I have much to thank them for!
+- **Redstonia** - main (and only) developer of this mod. That's me!
+- [**Fallen Breath**](https://github.com/Fallen-Breath) - their [yamlang](https://github.com/Fallen-Breath/yamlang) plugin, which converts `.yml` files to `.json` so Minecraft can read them, which is neat! Also for [preprocessor](https://github.com/Fallen-Breath/preprocessor), which allows for nice support for multiple versions of the game! I had to refer to their [fabric-mod-template](https://github.com/Fallen-Breath/fabric-mod-template) many times to understand how to actually use the preprocessor, so many thanks to their code, because I cannot Gradle!
+  - [**Replay Mod team**](https://github.com/ReplayMod) - for the original [preprocessor](https://github.com/ReplayMod/preprocessor), of which Fallen's is a fork of.
+- [**FabricMC team**](https://github.com/FabricMC) - Snap is of course, a Fabric mod. Thanks to you guys for making a great mod loader!
+- [**QuiltMC team**](https://github.com/QuiltMC) - cool people with cool [mappings](https://github.com/QuiltMC/quilt-mappings)! Only reason that I'm not developing a Quilt mod is because Fabric is more widely used, but I have my fingers crossed that that shifts in the future, because you people are doing some really amazing stuff!
+- [**Vineflower team**](https://github.com/Vineflower) - for making the fantastic [Vineflower](https://github.com/Vineflower/vineflower) decompiler, that produces quite readable code.
+
 ## Thanks for reading to the end!
 _You're welcome!_
