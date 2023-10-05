@@ -29,8 +29,8 @@ base {
     archivesName = project.archives_base_name
 }
 
-String MIXIN_CONFIG_PATH = 'ssutils.mixins.json'
-String LANG_DIR = 'assets/ssutils/lang'
+String MIXIN_CONFIG_PATH = 'snap.mixins.json'
+String LANG_DIR = 'assets/snap/lang'
 JavaVersion JAVA_COMPATIBILITY = JavaVersion.VERSION_17
 
 loom {

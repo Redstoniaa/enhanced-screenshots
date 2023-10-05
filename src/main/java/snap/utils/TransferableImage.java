@@ -1,4 +1,4 @@
-package ssutils.utils;
+package snap.utils;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;

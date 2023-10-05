@@ -1,13 +1,13 @@
-package ssutils;
+package snap;
 
-import ssutils.utils.Translations;
+import snap.utils.Translations;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScreenshotUtilitiesMod {
-    public static final String MOD_ID = "screenshot-utilities";
+public class SnapMod {
+    public static final String MOD_ID = "snap";
     public static ModMetadata METADATA;
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     

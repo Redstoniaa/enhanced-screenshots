@@ -1,8 +1,8 @@
-package ssutils.mixin;
+package snap.mixin;
 
 import com.mojang.blaze3d.framebuffer.Framebuffer;
 import com.mojang.blaze3d.texture.NativeImage;
-import ssutils.gui.screen.ScreenshotManagementScreen;
+import snap.gui.screen.ScreenshotManagementScreen;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;

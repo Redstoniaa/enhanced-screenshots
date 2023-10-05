@@ -1,4 +1,4 @@
-package ssutils.utils;
+package snap.utils;
 
 import com.mojang.blaze3d.texture.NativeImage;
 
@@ -9,7 +9,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-import static ssutils.ScreenshotUtilitiesMod.LOGGER;
+import static snap.SnapMod.LOGGER;
 
 public class IO {
     public static final boolean isHeadless;

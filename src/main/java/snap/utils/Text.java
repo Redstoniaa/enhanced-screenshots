@@ -1,4 +1,4 @@
-package ssutils.utils;
+package snap.utils;
 
 import net.minecraft.text.MutableText;
 

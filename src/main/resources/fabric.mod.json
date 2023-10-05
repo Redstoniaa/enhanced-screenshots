@@ -5,7 +5,7 @@
   "name": "${name}",
   "description": "${description}",
   "authors": ["${author}"],
-  "icon": "assets/ssutils/icon.png",
+  "icon": "assets/snap/icon.png",
   "environment": "client",
   "license": "MIT",
   "contact": {
@@ -14,9 +14,9 @@
     "issues": "https://github.com/Redstoniaa/enhanced-screenshots/issues"
   },
   "entrypoints": {
-    "client": ["ssutils.ScreenshotUtilitiesMod::init"]
+    "client": ["snap.SnapMod::init"]
   },
-  "mixins": ["ssutils.mixins.json"],
+  "mixins": ["snap.mixins.json"],
   "depends": {
     "fabricloader": ">=0.14.22",
     "minecraft": "${minecraft_dependency}"

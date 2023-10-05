@@ -1,6 +1,6 @@
-# Screenshot Utilities
+# Snap!
 
-_Screenshot Utilities_ is a self-explanatory mod that adds a few nice utility features when you're taking screenshots.
+_Snap!_ is a nice mod that adds some useful features when you're taking screenshots.
 
 When you take a screenshot with this mod enabled, a nice little screen will show up with a couple options on what to do with it next. You can...
 - **Change the file name that the image is being saved to.** If you find yourself with a lot of screenshots with names that look really similar, and you can't tell them apart, this will prove pretty useful, as it allows you to change what name the file is saved under!

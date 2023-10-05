@@ -1,4 +1,4 @@
-package ssutils.utils;
+package snap.utils;
 
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
@@ -11,14 +11,14 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import static ssutils.ScreenshotUtilitiesMod.LOGGER;
+import static snap.SnapMod.LOGGER;
 
 public class Translations {
     public static Map<String, Map<String, String>> translations = new HashMap<>();
     public static Set<String> supportedLanguages;
     public static final String FALLBACK_LANGUAGE = "en_us";
     
-    private static final String LANGUAGES_DIRECTORY = "assets/ssutils/lang/";
+    private static final String LANGUAGES_DIRECTORY = "assets/snap/lang/";
     private static final String SUPPORTED_LANGUAGES_PATH = LANGUAGES_DIRECTORY + "meta/supported_languages.json";
     private static final String LANGUAGE_PATH = LANGUAGES_DIRECTORY + "%s.json";
     
