@@ -22,9 +22,6 @@ public class Translations {
     private static final String SUPPORTED_LANGUAGES_PATH = LANGUAGES_DIRECTORY + "meta/supported_languages.json";
     private static final String LANGUAGE_PATH = LANGUAGES_DIRECTORY + "%s.json";
     
-    private static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
-    private static final Gson GSON = new Gson();
-    
     public static String translate(String key, Object... args) {
         if (isLanguageSupported(getCurrentLanguage()))
             return translateTo(getCurrentLanguage(), key, args);
@@ -78,21 +75,10 @@ public class Translations {
     }
     
     private static Set<String> readSupportedLanguages() throws IOException {
-        return readAndInterpretResourceJson(SUPPORTED_LANGUAGES_PATH, new TypeToken<>(){});
+        return IO.readJsonFromResource(SUPPORTED_LANGUAGES_PATH, new TypeToken<>(){});
     }
     
     private static Map<String, String> readTranslation(String languageCode) throws IOException {
-        return readAndInterpretResourceJson(LANGUAGE_PATH.formatted(languageCode), new TypeToken<>(){});
-    }
-    
-    private static <T> T readAndInterpretResourceJson(String resourcePath, TypeToken<T> typeToken) throws IOException {
-        return GSON.fromJson(readResource(resourcePath), typeToken);
-    }
-    
-    private static String readResource(String resourcePath) throws IOException {
-        InputStream supportedLanguagesStream = CLASS_LOADER.getResourceAsStream(resourcePath);
-        if (supportedLanguagesStream == null)
-            throw new IOException("Resource could not be found or accessed.");
-        return IOUtils.toString(supportedLanguagesStream, StandardCharsets.UTF_8);
+        return IO.readJsonFromResource(LANGUAGE_PATH.formatted(languageCode), new TypeToken<>(){});
     }
 }
