@@ -2,7 +2,7 @@ package snap.mixin;
 
 import com.mojang.blaze3d.framebuffer.Framebuffer;
 import com.mojang.blaze3d.texture.NativeImage;
-import snap.gui.screen.ScreenshotManagementScreen;
+import snap.Screenshot;
 import net.minecraft.client.util.ScreenshotRecorder;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
@@ -21,8 +21,8 @@ public abstract class ScreenshotRecorderMixin {
             at = @At(value = "INVOKE", target = "Ljava/io/File;mkdir()Z", shift = At.Shift.AFTER),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private static void grab(File gameDirectory, @Nullable String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci, NativeImage nativeImage, File file) {
+    private static void interceptScreenshot(File gameDirectory, @Nullable String fileName, Framebuffer framebuffer, Consumer<Text> messageReceiver, CallbackInfo ci, NativeImage nativeImage, File file) {
         ci.cancel();
-        ScreenshotManagementScreen.open(nativeImage, file, messageReceiver);
+        new Screenshot(nativeImage, messageReceiver).setup();
     }
 }
