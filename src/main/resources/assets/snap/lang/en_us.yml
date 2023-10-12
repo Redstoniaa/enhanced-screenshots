@@ -1,19 +1,20 @@
 snap:
   screen:
-    name: "Screenshot Management"
-    file_name.label: "Screenshot File Name"
-    save:
-      text: "Save"
-      tooltip: "Save the screenshot to a file"
-      success: "Saved screenshot as "
-      failure: "An error occurred while saving the screenshot."
+    name: "Snap's Post-Screenshot Screen"
+    file_name.label: "Image File Name"
+    rename:
+      text: "Rename"
+      text_keep: "Keep"
+      tooltip: "Rename from the default file name, or keep it if blank"
+      success: "Renamed screenshot to "
+      failure: "An error occurred while renaming the screenshot."
       failure_file_exists: "A file named %s already exists. Please choose a different name."
     copy:
       text: "Copy to Clipboard"
       text_success: "Copied!"
       text_unavailable: "Clipboard unavailable"
       tooltip: "Copy the image to your clipboard"
-      tooltip_unavailable: "Clipboard is unavailable, so this functionality is too"
+      tooltip_unavailable: "Clipboard is unavailable"
       success: "Screenshot copied to clipboard!"
       failure: "Failed to copy screenshot to clipboard."
     discard:

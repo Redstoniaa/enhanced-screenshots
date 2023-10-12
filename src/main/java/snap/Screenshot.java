@@ -6,7 +6,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
-import snap.ui.screen.ScreenshotManagementScreen;
+import snap.ui.screen.PostScreenshotScreen;
 import snap.utils.IO;
 import snap.utils.config.Config;
 
@@ -37,7 +37,7 @@ public class Screenshot {
     
     private void openUi() {
         switch (Config.currentSettings.uiType) {
-            case SCREEN -> ScreenshotManagementScreen.open(this);
+            case SCREEN -> PostScreenshotScreen.open(this);
             case CHAT -> {}
         }
     }
@@ -52,7 +52,7 @@ public class Screenshot {
         
         File destination = createScreenshotFile(fileName);
         if (destination.exists()) {
-            sendMessage(translated("snap.screen.save.failure_file_exists", destination.getName()).formatted(YELLOW));
+            sendMessage(translated("snap.screen.rename.failure_file_exists", destination.getName()).formatted(YELLOW));
             return false;
         }
     
@@ -61,9 +61,9 @@ public class Screenshot {
             Text openFileClick = literal(destination.getName())
                     .formatted(Formatting.UNDERLINE)
                     .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
-            sendMessage(translated("snap.screen.save.success").formatted(GREEN).append(openFileClick));
+            sendMessage(translated("snap.screen.rename.success").formatted(GREEN).append(openFileClick));
         } else {
-            sendMessage(translated("snap.screen.save.failure").formatted(RED));
+            sendMessage(translated("snap.screen.rename.failure").formatted(RED));
         }
         
         return renameSuccess;

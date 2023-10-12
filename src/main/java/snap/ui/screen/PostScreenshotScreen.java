@@ -18,9 +18,11 @@ import static snap.utils.Text.translated;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_C;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ENTER;
 
-public class ScreenshotManagementScreen
+public class PostScreenshotScreen
         extends Screen {
     private final Screenshot screenshot;
+    
+    private boolean wasPreviousFileNameFieldBlank = true;
     
     private static final int GLOBAL_WIDGET_LENGTH = 150;
     private static final int GLOBAL_WIDGET_HEIGHT = 20;
@@ -31,13 +33,13 @@ public class ScreenshotManagementScreen
             0, 0,
             GLOBAL_WIDGET_LENGTH * 2 / 3, GLOBAL_WIDGET_HEIGHT,
             translated("snap.screen.file_name.label"));
-    public final ButtonWidget saveFinalButton = ButtonWidget.builder(
-                    translated("snap.screen.save.text"),
+    public final ButtonWidget renameButton = ButtonWidget.builder(
+                    translated("snap.screen.rename.text_keep"),
                     button -> rename())
             .size(GLOBAL_WIDGET_LENGTH / 3, GLOBAL_WIDGET_HEIGHT)
-            .tooltip(Tooltip.create(translated("snap.screen.save.tooltip")))
+            .tooltip(Tooltip.create(translated("snap.screen.rename.tooltip")))
             .build();
-    public final ButtonWidget copyClipboardButton = ButtonWidget.builder(
+    public final ButtonWidget copyButton = ButtonWidget.builder(
                     translated("snap.screen.copy.text"),
                     button -> copy())
             .size(GLOBAL_WIDGET_LENGTH, GLOBAL_WIDGET_HEIGHT)
@@ -52,16 +54,17 @@ public class ScreenshotManagementScreen
     
     public static void open(Screenshot screenshot) {
         MinecraftClient.getInstance()
-                .setScreen(new ScreenshotManagementScreen(screenshot));
+                .setScreen(new PostScreenshotScreen(screenshot));
     }
     
-    public ScreenshotManagementScreen(Screenshot screenshot) {
+    public PostScreenshotScreen(Screenshot screenshot) {
         super(translated("snap.screen.name"));
         this.screenshot = screenshot;
         
         setInitialFocus(fileNameField);
+        fileNameField.setChangedListener(this::onFileNameFieldChange);
         if (IO.isHeadless) {
-            setWidgetActive(copyClipboardButton,
+            setWidgetActive(copyButton,
                             false,
                             translated("snap.screen.copy.text_unavailable"),
                             Tooltip.create(translated("snap.screen.copy.tooltip_unavailable")));
@@ -70,8 +73,8 @@ public class ScreenshotManagementScreen
     
     @Override
     protected void init() {
-        addRow(0, fileNameField, saveFinalButton);
-        addRow(1, copyClipboardButton);
+        addRow(0, fileNameField, renameButton);
+        addRow(1, copyButton);
         addRow(2, discardButton);
     }
     
@@ -101,6 +104,16 @@ public class ScreenshotManagementScreen
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
     
+    public void onFileNameFieldChange(String content) {
+        boolean isBlank = content.isBlank();
+        if (wasPreviousFileNameFieldBlank == isBlank)
+            return;
+        wasPreviousFileNameFieldBlank = isBlank;
+        
+        if (isBlank) renameButton.setMessage(translated("snap.screen.rename.text_keep"));
+        else         renameButton.setMessage(translated("snap.screen.rename.text"));
+    }
+    
     @Override
     public void closeScreen() {
         discard();
@@ -114,7 +127,7 @@ public class ScreenshotManagementScreen
     private void copy() {
         boolean success = screenshot.copyImageToClipboard();
         if (success) {
-            setWidgetActive(copyClipboardButton,
+            setWidgetActive(copyButton,
                             false,
                             translated("snap.screen.copy.text_success"));
         }
