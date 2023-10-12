@@ -52,8 +52,8 @@ public class IO {
         return IO.readJsonFromString(content, new TypeToken<>(){});
     }
     
-    public static void writeJsonToFile(Object object, File file) throws IOException {
-        GSON.toJson(object, new FileWriter(file));
+    public static void writeJsonToFile(Object object, Path path) throws IOException {
+        GSON.toJson(object, Files.newBufferedWriter(path));
     }
     
     public static <T> T readJsonFromString(String input, TypeToken<T> typeToken) {
@@ -64,7 +64,7 @@ public class IO {
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     }
     
-    public static void saveNativeImage(NativeImage image, File destination) {
+    public static void saveNativeImage(NativeImage image, Path destination) {
         try (image) {
             image.writeFile(destination);
         } catch (Exception e) {
@@ -72,19 +72,17 @@ public class IO {
         }
     }
     
-    public static boolean rename(File target, File destination) {
+    public static boolean rename(Path target, Path destination) {
         try {
-            boolean renameSuccess = target.renameTo(destination);
-            if (!renameSuccess)
-                LOGGER.error("File rename operation failed. Attempted to rename " + target + " to " + destination);
-            return renameSuccess;
+            Files.move(target, destination);
+            return true;
         } catch (Exception e) {
-            LOGGER.error("An error occurred while renaming the io.", e);
+            LOGGER.error("An error occurred while renaming the file.", e);
             return false;
         }
     }
     
-    public static boolean copyImageToClipboard(File source) {
+    public static boolean copyImageToClipboard(Path source) {
         if (isHeadless) return false;
         
         BufferedImage image = readImageFrom(source);
@@ -94,11 +92,21 @@ public class IO {
         return true;
     }
     
-    private static BufferedImage readImageFrom(File file) {
+    public static boolean delete(Path target) {
         try {
-            return ImageIO.read(file);
+            Files.delete(target);
+            return true;
+        } catch (IOException e) {
+            LOGGER.error("An IO exception occurred while trying to delete the file at " + target, e);
+            return false;
+        }
+    }
+    
+    private static BufferedImage readImageFrom(Path path) {
+        try {
+            return ImageIO.read(Files.newInputStream(path));
         } catch (Exception e) {
-            LOGGER.error("An error occurred trying to read the image at " + file, e);
+            LOGGER.error("An error occurred trying to read the image at " + path, e);
             return null;
         }
     }

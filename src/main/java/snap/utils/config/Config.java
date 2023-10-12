@@ -31,7 +31,7 @@ public class Config {
     
     public static void saveConfig() {
         try {
-            IO.writeJsonToFile(currentSettings, CONFIG_PATH.toFile());
+            IO.writeJsonToFile(currentSettings, CONFIG_PATH);
         } catch (IOException exception) {
             LOGGER.error("An IO exception occurred trying to save to the config file.", exception);
         }

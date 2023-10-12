@@ -10,7 +10,9 @@ import snap.ui.screen.PostScreenshotScreen;
 import snap.utils.IO;
 import snap.utils.config.Config;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import static net.minecraft.text.Text.literal;
@@ -19,11 +21,11 @@ import static snap.utils.Text.translated;
 
 public class Screenshot {
     public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static final File screenshotDirectory = new File(client.runDirectory, "screenshots");
+    public static final Path screenshotDirectory = Paths.get(client.runDirectory.getAbsolutePath(), "screenshot");
     
     public final NativeImage image;
     public final Consumer<Text> chatMessageReceiver;
-    public final File unnamedScreenshotFile = createScreenshotFile(Util.getFileNameFormattedDateTime());
+    public final Path unnamedScreenshotFile = createScreenshotFile(Util.getFileNameFormattedDateTime());
     
     public Screenshot(NativeImage image, Consumer<Text> chatMessageReceiver) {
         this.image = image;
@@ -50,17 +52,18 @@ public class Screenshot {
         if (fileName.isBlank())
             return true;
         
-        File destination = createScreenshotFile(fileName);
-        if (destination.exists()) {
-            sendMessage(translated("snap.screen.rename.failure_file_exists", destination.getName()).formatted(YELLOW));
+        Path destination = createScreenshotFile(fileName);
+        String relativePath = destination.relativize(screenshotDirectory).toString();
+        if (Files.exists(destination)) {
+            sendMessage(translated("snap.screen.rename.failure_file_exists", relativePath).formatted(YELLOW));
             return false;
         }
-    
+        
         boolean renameSuccess = IO.rename(unnamedScreenshotFile, destination);
         if (renameSuccess) {
-            Text openFileClick = literal(destination.getName())
+            Text openFileClick = literal(relativePath)
                     .formatted(Formatting.UNDERLINE)
-                    .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.getAbsolutePath())));
+                    .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.toAbsolutePath().toString())));
             sendMessage(translated("snap.screen.rename.success").formatted(GREEN).append(openFileClick));
         } else {
             sendMessage(translated("snap.screen.rename.failure").formatted(RED));
@@ -79,7 +82,7 @@ public class Screenshot {
     }
     
     public void deleteImage() {
-        unnamedScreenshotFile.delete();
+        IO.delete(unnamedScreenshotFile);
         sendMessage(translated("snap.screen.discard.success"));
     }
     
@@ -87,7 +90,7 @@ public class Screenshot {
         chatMessageReceiver.accept(message);
     }
     
-    public static File createScreenshotFile(String name) {
-        return new File(screenshotDirectory, name + ".png");
+    public static Path createScreenshotFile(String name) {
+        return screenshotDirectory.resolve(name);
     }
 }
