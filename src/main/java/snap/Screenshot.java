@@ -51,6 +51,7 @@ public class Screenshot {
             return true;
         
         Path destination = createScreenshotFile(fileName);
+        IO.createParentDirectories(destination);
         String relativePath = screenshotDirectory.relativize(destination).toString();
         if (Files.exists(destination)) {
             sendMessage(translated("snap.screen.rename.failure_file_exists", relativePath).formatted(YELLOW));

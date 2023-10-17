@@ -47,9 +47,9 @@ public class IO {
         return Optional.ofNullable(inputStream);
     }
     
-    public static <T> T readJsonFromPath(Path path, TypeToken typeToken) throws IOException {
+    public static <T> T readJsonFromPath(Path path, TypeToken<T> typeToken) throws IOException {
         String content = Files.readString(path);
-        return IO.readJsonFromString(content, new TypeToken<>(){});
+        return IO.readJsonFromString(content, typeToken);
     }
     
     public static void writeJsonToFile(Object object, Path path) throws IOException {
@@ -62,6 +62,20 @@ public class IO {
     
     private static String readInputStream(InputStream inputStream) throws IOException {
         return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+    }
+    
+    public static boolean createParentDirectories(Path path) {
+        return createDirectories(path.getParent());
+    }
+    
+    public static boolean createDirectories(Path path) {
+        try {
+            Files.createDirectories(path);
+        } catch (Exception exception) {
+            return false;
+        }
+        
+        return true;
     }
     
     public static void saveNativeImage(NativeImage image, Path destination) {
