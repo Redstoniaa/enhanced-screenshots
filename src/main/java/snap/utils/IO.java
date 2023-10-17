@@ -1,6 +1,7 @@
 package snap.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mojang.blaze3d.texture.NativeImage;
 import org.apache.commons.io.IOUtils;
@@ -20,7 +21,7 @@ import static snap.SnapMod.LOGGER;
 
 public class IO {
     private static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
-    private static final Gson GSON = new Gson();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     
     public static final boolean isHeadless;
     private static final Clipboard clipboard;
@@ -53,7 +54,10 @@ public class IO {
     }
     
     public static void writeJsonToFile(Object object, Path path) throws IOException {
-        GSON.toJson(object, Files.newBufferedWriter(path));
+        BufferedWriter writer = Files.newBufferedWriter(path);
+        GSON.toJson(object, writer);
+        writer.flush();
+        writer.close();
     }
     
     public static <T> T readJsonFromString(String input, TypeToken<T> typeToken) {

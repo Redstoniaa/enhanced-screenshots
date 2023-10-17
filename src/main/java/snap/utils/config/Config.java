@@ -12,28 +12,33 @@ import static snap.SnapMod.LOGGER;
 import static snap.SnapMod.MOD_ID;
 
 public class Config {
-    public static ConfigSettings currentSettings;
+    public static SnapSettings currentSettings;
     private static final Path CONFIG_DIRECTORY = FabricLoader.getInstance().getConfigDir();
     private static final Path CONFIG_PATH = CONFIG_DIRECTORY.resolve(MOD_ID + ".json");
     
-    public static void readConfig() {
+    public static void readSettings() {
         if (Files.exists(CONFIG_PATH)) {
             try {
-                currentSettings = IO.readJsonFromPath(CONFIG_PATH, new TypeToken<ConfigSettings>(){});
+                currentSettings = IO.readJsonFromPath(CONFIG_PATH, new TypeToken<>(){});
             } catch (IOException exception) {
                 LOGGER.error("An IO exception occurred trying to read the config file.", exception);
-                currentSettings = ConfigSettings.getDefault();
+                saveAndUseDefaultSettings();
             }
         } else {
-            currentSettings = ConfigSettings.getDefault();
+            saveAndUseDefaultSettings();
         }
     }
     
-    public static void saveConfig() {
+    public static void saveSettings() {
         try {
             IO.writeJsonToFile(currentSettings, CONFIG_PATH);
         } catch (IOException exception) {
             LOGGER.error("An IO exception occurred trying to save to the config file.", exception);
         }
+    }
+    
+    private static void saveAndUseDefaultSettings() {
+        currentSettings = SnapSettings.getDefault();
+        saveSettings();
     }
 }

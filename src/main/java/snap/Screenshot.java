@@ -36,7 +36,7 @@ public class Screenshot {
     }
     
     private void openUi() {
-        switch (Config.currentSettings.uiType) {
+        switch (Config.currentSettings.uiMode) {
             case SCREEN -> PostScreenshotScreen.open(this);
             case CHAT -> {}
         }

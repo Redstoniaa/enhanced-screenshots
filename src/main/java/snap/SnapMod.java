@@ -15,7 +15,7 @@ public class SnapMod {
     public static void init() {
         System.setProperty("java.awt.headless", "false");
         Translations.loadAllTranslations();
-        Config.readConfig();
+        Config.readSettings();
         getModMetadata();
     }
     
