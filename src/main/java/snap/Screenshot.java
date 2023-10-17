@@ -4,7 +4,6 @@ import com.mojang.blaze3d.texture.NativeImage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import snap.ui.screen.PostScreenshotScreen;
 import snap.utils.IO;
@@ -12,7 +11,6 @@ import snap.utils.config.Config;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import static net.minecraft.text.Text.literal;
@@ -21,7 +19,7 @@ import static snap.utils.Text.translated;
 
 public class Screenshot {
     public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static final Path screenshotDirectory = Paths.get(client.runDirectory.getAbsolutePath(), "screenshot");
+    public static final Path screenshotDirectory = Path.of(client.runDirectory.getAbsolutePath(), "screenshots");
     
     public final NativeImage image;
     public final Consumer<Text> chatMessageReceiver;
@@ -53,7 +51,7 @@ public class Screenshot {
             return true;
         
         Path destination = createScreenshotFile(fileName);
-        String relativePath = destination.relativize(screenshotDirectory).toString();
+        String relativePath = screenshotDirectory.relativize(destination).toString();
         if (Files.exists(destination)) {
             sendMessage(translated("snap.screen.rename.failure_file_exists", relativePath).formatted(YELLOW));
             return false;
@@ -62,7 +60,7 @@ public class Screenshot {
         boolean renameSuccess = IO.rename(unnamedScreenshotFile, destination);
         if (renameSuccess) {
             Text openFileClick = literal(relativePath)
-                    .formatted(Formatting.UNDERLINE)
+                    .formatted(UNDERLINE)
                     .styled(style -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, destination.toAbsolutePath().toString())));
             sendMessage(translated("snap.screen.rename.success").formatted(GREEN).append(openFileClick));
         } else {
@@ -91,6 +89,6 @@ public class Screenshot {
     }
     
     public static Path createScreenshotFile(String name) {
-        return screenshotDirectory.resolve(name);
+        return screenshotDirectory.resolve(name + ".png");
     }
 }
