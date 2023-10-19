@@ -1,7 +1,7 @@
 package snap.ui.screen;
 
 import snap.Screenshot;
-import snap.utils.IO;
+import snap.utils.io.IO;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;

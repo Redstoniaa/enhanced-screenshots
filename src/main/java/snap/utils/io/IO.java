@@ -1,28 +1,20 @@
-package snap.utils;
+package snap.utils.io;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.mojang.blaze3d.texture.NativeImage;
-import org.apache.commons.io.IOUtils;
+import snap.utils.TransferableImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
 import static snap.SnapMod.LOGGER;
 
 public class IO {
-    private static final ClassLoader CLASS_LOADER = Translations.class.getClassLoader();
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    
     public static final boolean isHeadless;
     private static final Clipboard clipboard;
     
@@ -34,38 +26,6 @@ public class IO {
         } else {
             clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         }
-    }
-    
-    public static <T> T readJsonFromResource(String path, TypeToken<T> typeToken) throws IOException {
-        InputStream stream = getResourceAsStream(path)
-                .orElseThrow(() -> new IOException("Resource could not be found or accessed."));
-        String content = readInputStream(stream);
-        return readJsonFromString(content, typeToken);
-    }
-    
-    private static Optional<InputStream> getResourceAsStream(String path) {
-        InputStream inputStream = CLASS_LOADER.getResourceAsStream(path);
-        return Optional.ofNullable(inputStream);
-    }
-    
-    public static <T> T readJsonFromPath(Path path, TypeToken<T> typeToken) throws IOException {
-        String content = Files.readString(path);
-        return IO.readJsonFromString(content, typeToken);
-    }
-    
-    public static void writeJsonToFile(Object object, Path path) throws IOException {
-        BufferedWriter writer = Files.newBufferedWriter(path);
-        GSON.toJson(object, writer);
-        writer.flush();
-        writer.close();
-    }
-    
-    public static <T> T readJsonFromString(String input, TypeToken<T> typeToken) {
-        return GSON.fromJson(input, typeToken);
-    }
-    
-    private static String readInputStream(InputStream inputStream) throws IOException {
-        return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     }
     
     public static boolean createParentDirectories(Path path) {

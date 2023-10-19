@@ -1,14 +1,11 @@
 package snap.utils;
 
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.client.MinecraftClient;
-import org.apache.commons.io.IOUtils;
+import snap.utils.io.JSON;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static snap.SnapMod.LOGGER;
@@ -75,10 +72,10 @@ public class Translations {
     }
     
     private static Set<String> readSupportedLanguages() throws IOException {
-        return IO.readJsonFromResource(SUPPORTED_LANGUAGES_PATH, new TypeToken<>(){});
+        return JSON.readFromResource(SUPPORTED_LANGUAGES_PATH, new TypeToken<>(){});
     }
     
     private static Map<String, String> readTranslation(String languageCode) throws IOException {
-        return IO.readJsonFromResource(LANGUAGE_PATH.formatted(languageCode), new TypeToken<>(){});
+        return JSON.readFromResource(LANGUAGE_PATH.formatted(languageCode), new TypeToken<>(){});
     }
 }

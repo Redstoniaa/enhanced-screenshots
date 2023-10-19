@@ -6,7 +6,7 @@ import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
 import snap.ui.screen.PostScreenshotScreen;
-import snap.utils.IO;
+import snap.utils.io.IO;
 import snap.utils.config.Config;
 
 import java.nio.file.Files;
