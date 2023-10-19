@@ -19,7 +19,8 @@ public class Config {
     public static void readSettings() {
         if (Files.exists(CONFIG_PATH)) {
             try {
-                currentSettings = IO.readJsonFromPath(CONFIG_PATH, new TypeToken<>(){});
+                SnapRawSettings rawSettings = IO.readJsonFromPath(CONFIG_PATH, new TypeToken<>(){});
+                currentSettings = rawSettings.processed();
             } catch (IOException exception) {
                 LOGGER.error("An IO exception occurred trying to read the config file.", exception);
                 saveAndUseDefaultSettings();
@@ -31,7 +32,7 @@ public class Config {
     
     public static void saveSettings() {
         try {
-            IO.writeJsonToFile(currentSettings, CONFIG_PATH);
+            IO.writeJsonToFile(currentSettings.raw(), CONFIG_PATH);
         } catch (IOException exception) {
             LOGGER.error("An IO exception occurred trying to save to the config file.", exception);
         }
