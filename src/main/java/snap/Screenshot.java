@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Util;
+import org.jetbrains.annotations.Nullable;
 import snap.ui.screen.PostScreenshotScreen;
 import snap.utils.io.IO;
 import snap.utils.config.Config;
@@ -19,7 +20,7 @@ import static snap.utils.Text.translated;
 
 public class Screenshot {
     public static final MinecraftClient client = MinecraftClient.getInstance();
-    public static final Path screenshotDirectory = Path.of(client.runDirectory.getAbsolutePath(), "screenshots");
+    public static final Path defaultScreenshotDirectory = Path.of(client.runDirectory.getAbsolutePath(), "screenshots");
     
     public final NativeImage image;
     public final Consumer<Text> chatMessageReceiver;
@@ -52,7 +53,7 @@ public class Screenshot {
         
         Path destination = createScreenshotFile(fileName);
         IO.createParentDirectories(destination);
-        String relativePath = screenshotDirectory.relativize(destination).toString();
+        String relativePath = getScreenshotDirectory().relativize(destination).toString();
         if (Files.exists(destination)) {
             sendMessage(translated("snap.screen.rename.failure_file_exists", relativePath).formatted(YELLOW));
             return false;
@@ -89,7 +90,14 @@ public class Screenshot {
         chatMessageReceiver.accept(message);
     }
     
+    private static Path getScreenshotDirectory() {
+        @Nullable Path override = Config.currentSettings.directoryOverride;
+        return override != null
+                ? override
+                : defaultScreenshotDirectory;
+    }
+    
     public static Path createScreenshotFile(String name) {
-        return screenshotDirectory.resolve(name + ".png");
+        return getScreenshotDirectory().resolve(name + ".png");
     }
 }
